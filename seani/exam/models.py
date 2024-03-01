@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
+from career.models import career
+from library.models import Module
     
 
 
@@ -28,3 +31,30 @@ class Stage(models.Model):
         verbose_name = "Etapas"
 
 # Create your models here.
+class Exam(models.Model):
+    user = models.OneToOneField(
+        User, on_delete = models.CASCADE, 
+        verbose_name = 'Usuarios')
+    stage = models.ForeignKey(
+        Stage, on_delete = models.CASCADE,
+        verbose_name = 'Etapas')
+    career = models.ForeignKey(
+        career, on_delete = models.CASCADE,
+        verbose_name = 'Carrera')
+    modules = models.ManyToManyField(
+        Module,
+        through='ExamModule',
+        verbose_name = 'Modulos'
+    )
+    score = models.FloatField( verbose_name = 'Calificacion',default = 0.0)
+    
+class ExamModule(models.Model):
+    Exam = models.ForeignKey(
+        Exam, on_delete = models.CASCADE,
+        verbose_name = 'Examen')
+    module = models.ForeignKey(
+        Module, on_delete = models.CASCADE,
+        verbose_name = 'Modulos')
+    active = models.BooleanField(verbose_name = 'Activo', default = True)
+    score = models.FloatField(verbose_name = 'Calificacion', default = 0.0)
+    
